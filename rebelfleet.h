@@ -3,6 +3,7 @@
 
 #include <cstdlib>
 #include <type_traits>
+#include <stdexcept>
 
 /*
 = Plik rebelfleet.h =
@@ -42,18 +43,18 @@ class RebelStarship {
 	public:
 		template <typename T = U>
 		explicit RebelStarship(enable_if_t<can_attack, T> shield, T speed, T attack_power): shield(shield), speed(speed), attack_power(attack_power) {
-				assert(speed >= min_speed && speed <= max_speed);
+				validateSpeed(speed);
 		}
-	
+
 		template <typename T = U>
 		explicit RebelStarship(enable_if_t<!can_attack, T> shield, T speed): shield(shield), speed(speed) {
-				assert(speed >= min_speed && speed <= max_speed);
+				validateSpeed(speed);
 		}
-		
+
 		U getShield();
 		U getSpeed();
 		void takeDamage(U damage);
-		
+
 		template <typename T = U>
 		enable_if_t<can_attack, T> getAttackPower() {
 			return attack_power;
@@ -63,6 +64,11 @@ class RebelStarship {
 		U shield;
 		U speed;
 		U attack_power;
+        template <typename T = U>
+        void validateSpeed(T speed){
+            if(speed < min_speed || speed > max_speed)
+                throw std::invalid_argument("Invalid speed value");
+        }
 };
 
 template <typename U>
