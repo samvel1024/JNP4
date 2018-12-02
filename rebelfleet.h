@@ -35,49 +35,111 @@ Szablony klas Explorer, StarCruiser i XWing powinny być specjalizacją
 ogólniejszego szablonu RebelStarship<typename U, ...>.
 */
 
-template< bool B, class T = void >
-using enable_if_t = typename std::enable_if<B,T>::type;
+template<bool B, class T = void>
+using enable_if_t = typename std::enable_if<B, T>::type;
 
-template <typename U, int min_speed, int max_speed, bool can_attack>
-class RebelStarship {
-	public:
-		template <typename T = U>
-		explicit RebelStarship(enable_if_t<can_attack, T> shield, T speed, T attack_power): shield(shield), speed(speed), attack_power(attack_power) {
-				validateSpeed(speed);
-		}
+template<typename U, bool can_attack, bool has_speed = false, int min_speed = 0, int max_speed = 0>
+class Starship {
+public:
+    template<typename T = U>
+    explicit
+    Starship(enable_if_t<can_attack && has_speed, T> shield, T speed, T attack_power): shield(shield), speed(speed),
+                                                                                       attack_power(attack_power) {
+        validateSpeed(speed);
+    }
 
-		template <typename T = U>
-		explicit RebelStarship(enable_if_t<!can_attack, T> shield, T speed): shield(shield), speed(speed) {
-				validateSpeed(speed);
-		}
+    template<typename T = U>
+    explicit Starship(enable_if_t<!can_attack || !has_speed, T> shield, T arg2): shield(shield) {
+        if (has_speed) {
+            validateSpeed(arg2);
+            speed = arg2;
+        } else
+            attack_power = arg2;
+    }
 
-		U getShield();
-		U getSpeed();
-		void takeDamage(U damage);
 
-		template <typename T = U>
-		enable_if_t<can_attack, T> getAttackPower() {
-			return attack_power;
-		}
+    U getShield() {
+        return shield;
+    }
 
-	private:
-		U shield;
-		U speed;
-		U attack_power;
-        template <typename T = U>
-        void validateSpeed(T speed){
-            if(speed < min_speed || speed > max_speed)
-                throw std::invalid_argument("Invalid speed value");
-        }
+    template<typename T = U>
+    enable_if_t<has_speed, T>
+    getSpeed() {
+        return speed;
+    }
+
+    void takeDamage(U damage) {
+        if (shield < damage)
+            shield = 0;
+        else
+            shield -= damage;
+    }
+
+    template<typename T = U>
+    enable_if_t<can_attack, T> getAttackPower() {
+        return attack_power;
+    }
+
+private:
+    U shield;
+    U speed;
+    U attack_power;
+
+    template<typename T = U>
+    void validateSpeed(T speed) {
+        if (speed < min_speed || speed > max_speed)
+            throw std::invalid_argument("Invalid speed value");
+    }
 };
 
-template <typename U>
-using XWing = RebelStarship<U, 299796, 2997960, true>;
 
-template <typename U>
-using Explorer = RebelStarship<U, 299796, 2997960, false>;
+template<typename U, bool can_attack, int min, int max>
+using RebelStarship = Starship<U, can_attack, true, min, max>;
 
-template <typename U>
-using StarCruiser = RebelStarship<U, 99999, 299795, true>;
+template<typename U>
+using XWing = RebelStarship<U, true, 299796, 2997960>;
+
+template<typename U>
+using Explorer = RebelStarship<U, false, 299796, 2997960>;
+
+template<typename U>
+using StarCruiser = RebelStarship<U, true, 99999, 299795>;
+
+
+
+//Should be moved somewhere else
+template<typename U>
+using ImperialStarship = Starship<U, true>;
+
+template<typename U>
+using DeathStar = ImperialStarship<U>;
+
+template<typename U>
+using ImperialDestroyer = ImperialStarship<U>;
+
+template<typename U>
+using TIEFighter = ImperialStarship<U>;
+
+
+template<typename I, typename R>
+void attack(I imperial, R rebel);
+
+template<typename I, typename U>
+void attack(I imperial, Explorer<U> e) {
+    e.takeDamage(imperial.getAttackPower());
+}
+
+template<typename I, typename U>
+void attack(I imperial, StarCruiser<U> e) {
+    e.takeDamage(imperial.getAttackPower());
+    imperial.takeDamage(e.getAttackPower());
+}
+
+template<typename I, typename U>
+void attack(I imperial, XWing<U> e) {
+    e.takeDamage(imperial.getAttackPower());
+    imperial.takeDamage(e.getAttackPower());
+}
+
 
 #endif // __REBELFLEET_H__
