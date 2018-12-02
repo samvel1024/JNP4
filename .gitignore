@@ -4,3 +4,7 @@
 !.gitignore
 !README.md
 !starwars_example.cc
+!battle.h
+!rebelfleet.h
+!imperialfleet.h
+
