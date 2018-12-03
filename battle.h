@@ -2,7 +2,7 @@
 #define __BATTLE_H__
 #include <tuple>
 #include <cstdlib>
-
+#include <iostream>
 /*Klasa SpaceBattle<typename T, t0, T t1, typename... S>, gdzie:
 T – typ przechowujący czas,
 t0 – czas startowy,
@@ -51,6 +51,17 @@ Jeśli wszystkie statki zarówno Imperium jak i Rebelii są zniszczone, to zosta
 wypisany napis "DRAW\n". */
 
 
+template<class Tup, class Func, std::size_t ...Is>
+constexpr void static_for_impl(Tup &&t, Func &&f, std::index_sequence<Is...>) {
+    ( f(std::integral_constant<std::size_t, Is>{}, std::get<Is>(t)), ... );
+}
+
+template<class ... T, class Func>
+constexpr void static_for(std::tuple<T...> &t, Func &&f) {
+    static_for_impl(t, std::forward<Func>(f), std::make_index_sequence<sizeof...(T)>{});
+}
+
+
 template<typename T, T t0, T t1, typename ... S>
 class SpaceBattle {
     static_assert(0 <= t0 && t0 < t1, "Start time has to be less than end time");
@@ -61,8 +72,8 @@ class SpaceBattle {
     std::tuple<S...> ships;
 
 public:
-    explicit SpaceBattle(S &&... args) : ships(std::make_tuple(args)){
 
+    explicit SpaceBattle(S &... args) : ships(std::make_tuple(args...)) {
     }
 	
     size_t countImperialFleet() {
@@ -87,6 +98,8 @@ public:
         if (current >= end) { // Handle overflow
             current = end - current;
         }
+        static_for(ships, [&](auto i, auto w) { std::cout << i << " " << w.getShield() << std::endl; });
+
     }
 
 private:
