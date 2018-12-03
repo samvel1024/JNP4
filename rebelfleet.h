@@ -4,6 +4,7 @@
 #include <cstdlib>
 #include <type_traits>
 #include <stdexcept>
+#include <algorithm>
 
 /*
 = Plik rebelfleet.h =

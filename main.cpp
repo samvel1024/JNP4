@@ -1,4 +1,5 @@
 #include "rebelfleet.h"
+#include "battle.h"
 #include <cassert>
 
 int main() {
@@ -8,6 +9,15 @@ int main() {
     DeathStar<long> deathStar(10000, 75);
     TIEFighter<unsigned> fighter(50, 9);
     ImperialDestroyer<int> destroyer(150, 20);
+    auto battle = SpaceBattle<short, 1, 23,
+        DeathStar<long>,
+        Explorer<int>,
+        TIEFighter<unsigned>,
+        XWing<float>>(deathStar,
+                      explorer,
+                      fighter,
+                      xwing);
+    battle.tick(0);
     attack(destroyer, explorer);
     attack(cruiser, xwing);
     return 0;

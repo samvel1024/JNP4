@@ -2,6 +2,23 @@
 #define __BATTLE_H__
 
 
+#include <tuple>
+#include "rebelfleet.h"
+#include <iostream>
+
+
+template <class Tup, class Func, std::size_t ...Is>
+constexpr void static_for_impl(Tup&& t, Func &&f, std::index_sequence<Is...> )
+{
+    ( f(std::integral_constant<std::size_t, Is>{}, std::get<Is>(t)),... );
+}
+
+template <class ... T, class Func >
+constexpr void static_for(std::tuple<T...>&t, Func &&f)
+{
+    static_for_impl(t, std::forward<Func>(f), std::make_index_sequence<sizeof...(T)>{});
+}
+
 template<typename T, T t0, T t1, typename ... S>
 class SpaceBattle {
     static_assert(t0 < t1, "Start time has to be less than end time");
@@ -11,9 +28,22 @@ class SpaceBattle {
 
     std::tuple<S...> ships;
 
+
+
+    int main()
+    {
+        auto t = std::make_tuple( 1, "qwer", 3, 4 );
+
+        std::size_t weighted = 0;
+
+        std::cout << "Weighted: " << weighted << std::endl;
+
+        return 0;
+    }
+
+
 public:
-    explicit SpaceBattle(S &&... args) {
-        std::make_tuple(args...);
+    explicit SpaceBattle(S &... args) : ships(std::make_tuple(args...)){
     }
 
     size_t countImperialFleet() { //TODO
@@ -29,6 +59,7 @@ public:
         if (current >= end) { // Handle overflow
             current = end - current;
         }
+        static_for(ships, [&] (auto i, auto w) { std::cout << i << " " << w.getShield() << std::endl; });
     }
 
 };
