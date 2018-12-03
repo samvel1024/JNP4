@@ -5,6 +5,7 @@
 #include <type_traits>
 #include <stdexcept>
 #include <algorithm>
+#include <iostream>
 
 /*
 = Plik rebelfleet.h =
@@ -133,14 +134,15 @@ template<typename U>
 using TIEFighter = ImperialStarship<U>;
 
 
-template<typename U>
+/*template<typename U>
 void attack(ImperialStarship<U>& s1, StarCruiser<U>& s2) {
 	s2.takeDamage(s1.getAttackPower());
     s1.takeDamage(s2.getAttackPower());
 }
 
-template<typename U>
-void attack(ImperialStarship<U>& s1, XWing<U>& s2) {
+template<typename U, TIEFighter<U> T, XWing<U> X>
+void attack(T& s1, X& s2) {
+	std::cout << "WOW1" << "\n";
 	s2.takeDamage(s1.getAttackPower());
     s1.takeDamage(s2.getAttackPower());
 }
@@ -148,10 +150,21 @@ void attack(ImperialStarship<U>& s1, XWing<U>& s2) {
 template<typename U>
 void attack(ImperialStarship<U>& s1, Explorer<U>& s2) {
 	s2.takeDamage(s1.getAttackPower());
-}
+}*/
 
+template <typename I, typename R, int min, int max>
+static void attack (ImperialStarship<I>& ship1, RebelStarship<R, true, min, max>& ship2){
+	ship1.takeDamage(ship2.getAttackPower());
+	ship2.takeDamage(ship1.getAttackPower());
+}
+ 
+template <typename I, typename R, int min, int max>
+static void attack (ImperialStarship<I>& ship1, RebelStarship<R, false, min, max>& ship2){
+	ship2.takeDamage(ship1.getAttackPower());
+}
+ 
 template<typename I, typename R>
-void attack(I& imperial, R& rebel) {}
+static void attack (I ship1, R ship2){}
 
 
 #endif // __REBELFLEET_H__
