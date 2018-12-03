@@ -133,13 +133,25 @@ template<typename U>
 using TIEFighter = ImperialStarship<U>;
 
 
-template<typename I, typename R>
-void attack(I imperial, R rebel) {
-    rebel.takeDamage(imperial.getAttackPower());
-    if (R::canAttackEnemy()) {
-        imperial.takeDamage(rebel.getAttackPower());
-    }
+template<typename U>
+void attack(ImperialStarship<U> s1, StarCruiser<U> s2) {
+	s2.takeDamage(s1.getAttackPower());
+    s1.takeDamage(s2.getAttackPower());
 }
+
+template<typename U>
+void attack(ImperialStarship<U> s1, XWing<U> s2) {
+	s2.takeDamage(s1.getAttackPower());
+    s1.takeDamage(s2.getAttackPower());
+}
+
+template<typename U>
+void attack(ImperialStarship<U> s1, Explorer<U> s2) {
+	s2.takeDamage(s1.getAttackPower());
+}
+
+template<typename I, typename R>
+void attack(I imperial, R rebel) {}
 
 
 #endif // __REBELFLEET_H__
