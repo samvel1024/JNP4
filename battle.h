@@ -61,8 +61,8 @@ class SpaceBattle {
     std::tuple<S...> ships;
 
 public:
-    explicit SpaceBattle(S &&... args) {
-        std::make_tuple(args...);
+    explicit SpaceBattle(S &&... args) : ships(std::make_tuple(args)){
+
     }
 	
     size_t countImperialFleet() {
