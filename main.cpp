@@ -17,8 +17,21 @@ int main() {
                       explorer,
                       fighter,
                       xwing);
-    battle.tick(0);
-    attack(destroyer, explorer);
-    attack(cruiser, xwing);
-    return 0;
+
+    assert(battle.countRebelFleet() == 2);
+    assert(battle.countImperialFleet() == 2);
+
+    battle.tick(2);
+    assert(battle.countRebelFleet() == 2);
+    assert(battle.countImperialFleet() == 1);
+
+    battle.tick(1);
+    assert(battle.countRebelFleet() == 2);
+    assert(battle.countImperialFleet() == 1);
+
+    battle.tick(4);
+    assert(battle.countRebelFleet() == 0);
+    assert(battle.countImperialFleet() == 1);
+
+    battle.tick(1); // Wypisuje "IMPERIUM WON\n".
 }

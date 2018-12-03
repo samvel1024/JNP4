@@ -40,31 +40,42 @@ template<bool B, class T = void>
 using enable_if_t = typename std::enable_if<B, T>::type;
 
 //wprowadzić pole klasowe : static coś tam
-template<typename U, bool can_attack, bool has_speed = false, int min_speed = 0, int max_speed = 0>
+template<typename U, bool canAttack, bool hasSpeed = false, int minSpeed = 0, int maxSpeed = 0>
 class Starship {
 public:
+
+    static bool canAttackEnemy() {
+        return canAttack;
+    }
+
+    static bool isImperial() {
+        return canAttack && !hasSpeed;
+    }
+
     template<typename T = U>
     explicit
-    Starship(enable_if_t<can_attack && has_speed, T> shield, T speed, T attack_power): shield(shield), speed(speed),
-                                                                                       attack_power(attack_power) {
+    Starship(enable_if_t<canAttack && hasSpeed, T> shield, T speed, T attackPower): shield(shield), speed(speed),
+                                                                                    attackPower(attackPower) {
         validateSpeed(speed);
     }
 
     template<typename T = U>
-    explicit Starship(enable_if_t<!can_attack || !has_speed, T> shield, T arg2): shield(shield) {
-        if (has_speed) {
+    explicit Starship(enable_if_t<!canAttack || !hasSpeed, T> shield, T arg2): shield(shield) {
+        if (hasSpeed) {
             validateSpeed(arg2);
             speed = arg2;
         } else
-            attack_power = arg2;
+            attackPower = arg2;
     }
+
+
 
     U getShield() {
         return shield;
     }
 
     template<typename T = U>
-    enable_if_t<has_speed, T>
+    enable_if_t<hasSpeed, T>
     getSpeed() {
         return speed;
     }
@@ -77,25 +88,25 @@ public:
     }
 
     template<typename T = U>
-    enable_if_t<can_attack, T> getAttackPower() {
-        return attack_power;
+    enable_if_t<canAttack, T> getAttackPower() {
+        return attackPower;
     }
 
 private:
     U shield;
     U speed;
-    U attack_power;
+    U attackPower;
 
     template<typename T = U>
     void validateSpeed(T speed) {
-        if (speed < min_speed || speed > max_speed)
+        if (speed < minSpeed || speed > maxSpeed)
             throw std::invalid_argument("Invalid speed value");
     }
 };
 
 
-template<typename U, bool can_attack, int min, int max>
-using RebelStarship = Starship<U, can_attack, true, min, max>;
+template<typename U, bool canAttack, int min, int max>
+using RebelStarship = Starship<U, canAttack, true, min, max>;
 
 template<typename U>
 using XWing = RebelStarship<U, true, 299796, 2997960>;
@@ -123,28 +134,11 @@ using TIEFighter = ImperialStarship<U>;
 
 
 template<typename I, typename R>
-void attack(I imperial, R rebel);
-
-template<typename I, typename U>
-void attack(I imperial, Explorer<U> e) {
-    e.takeDamage(imperial.getAttackPower());
-}
-
-//zrobić jeden szablon
-template<typename I, typename U>
-void attackMutual(I imperial, U e) {
-    e.takeDamage(imperial.getAttackPower());
-    imperial.takeDamage(e.getAttackPower());
-}
-
-template<typename I, typename U>
-void attack(I imperial, StarCruiser<U> e) {
-    attackMutual(imperial, e);
-}
-
-template<typename I, typename U>
-void attack(I imperial, XWing<U> e) {
-    attackMutual(imperial, e);
+void attack(I imperial, R rebel) {
+    rebel.takeDamage(imperial.getAttackPower());
+    if (R::canAttackEnemy()) {
+        imperial.takeDamage(rebel.getAttackPower());
+    }
 }
 
 
