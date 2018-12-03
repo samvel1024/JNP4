@@ -53,7 +53,7 @@ wypisany napis "DRAW\n". */
 
 template<typename T, T t0, T t1, typename ... S>
 class SpaceBattle {
-    static_assert(t0 < t1, "Start time has to be less than end time");
+    static_assert(0 <= t0 && t0 < t1, "Start time has to be less than end time");
     const T start = t0;
     const T end = t1;
     T current = start;
@@ -67,7 +67,7 @@ public:
 	
     size_t countImperialFleet() {
 		size_t res = 0;
-		auto counter = [&res](auto&& x) { if (x == 0 && x.getShield() > 0) res++;}; //TODO sprawdzic jak porownac typy. Gwarantuje dobra kolejnosc
+		auto counter = [&res](auto& x) { if (instance_of(x) == 0 && x.getShield() > 0) res++;}; //TODO sprawdzic jak porownac typy.
     	std::apply([&](auto& ...x){(..., counter(x));}, ships);
 			   
 		return res;
@@ -75,7 +75,7 @@ public:
 
     size_t countRebelFleet() {
 		size_t res = 0;
-		auto counter = [](size_t &y, auto&& x) { if (x == 1 && x.getShield() > 0) y++;}; //TODO sprawdzic jak porownac typy
+		auto counter = [](size_t &y, auto& x) { if (x == 1 && x.getShield() > 0) y++;}; //TODO sprawdzic jak porownac typy
     	std::apply([&](auto& ...x){(..., counter(res, x));}, ships);
 		        
 		return res;
