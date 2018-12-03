@@ -64,7 +64,7 @@ public:
 
 
     void tick(T timeStep) {
-        /*current += timeStep;
+        current += timeStep;
         if (current >= end) { // Handle overflow
             current = end - current;
         }
@@ -81,11 +81,9 @@ public:
                 }
             };
             std::apply([&](auto &...a) { (..., foreach(a)); }, ships);
-        }*/
+        }
 
     }
-
-private:
 
 };
 
