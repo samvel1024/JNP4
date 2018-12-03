@@ -131,15 +131,19 @@ void attack(I imperial, Explorer<U> e) {
 }
 
 template<typename I, typename U>
-void attack(I imperial, StarCruiser<U> e) {
+void attackMutual(I imperial, U e) {
     e.takeDamage(imperial.getAttackPower());
     imperial.takeDamage(e.getAttackPower());
 }
 
 template<typename I, typename U>
+void attack(I imperial, StarCruiser<U> e) {
+    attackMutual(imperial, e);
+}
+
+template<typename I, typename U>
 void attack(I imperial, XWing<U> e) {
-    e.takeDamage(imperial.getAttackPower());
-    imperial.takeDamage(e.getAttackPower());
+    attackMutual(imperial, e);
 }
 
 
