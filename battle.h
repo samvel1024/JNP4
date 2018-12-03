@@ -42,7 +42,7 @@ public:
     void tick(T timeStep) {
         current += timeStep;
         if (current >= end) { // Handle overflow
-            current = end - current;
+            current = current - end;
         }
         static_for(ships, [&](auto i, auto w) { std::cout << i << " " << w.getShield() << std::endl; });
     }
