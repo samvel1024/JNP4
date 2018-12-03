@@ -38,6 +38,7 @@ ogólniejszego szablonu RebelStarship<typename U, ...>.
 template<bool B, class T = void>
 using enable_if_t = typename std::enable_if<B, T>::type;
 
+//wprowadzić pole klasowe : static coś tam
 template<typename U, bool can_attack, bool has_speed = false, int min_speed = 0, int max_speed = 0>
 class Starship {
 public:
@@ -56,7 +57,6 @@ public:
         } else
             attack_power = arg2;
     }
-
 
     U getShield() {
         return shield;
@@ -129,6 +129,7 @@ void attack(I imperial, Explorer<U> e) {
     e.takeDamage(imperial.getAttackPower());
 }
 
+//zrobić jeden szablon
 template<typename I, typename U>
 void attack(I imperial, StarCruiser<U> e) {
     e.takeDamage(imperial.getAttackPower());
