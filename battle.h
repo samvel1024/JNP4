@@ -34,7 +34,7 @@ private:
             return r;
         } else {
             const auto mid = l + (r - l) / 2;
-            if (mid * mid >= res) {
+            if (mid * mid > res) {
                 return squareRoot(res, l, mid);
             } else {
                 return squareRoot(res, mid + 1, r);
@@ -86,14 +86,14 @@ public:
     size_t countRebelFleet() { return countType<false>(); }
 
     void tick(T timeStep) {
-        if (countImperialFleet() == 0 && countRebelFleet() == 0)
+		if (countImperialFleet() == 0 && countRebelFleet() == 0)
             std::cout << "DRAW\n";
         else if (countImperialFleet() == 0)
             std::cout << "REBELLION WON\n";
         else if (countRebelFleet() == 0)
             std::cout << "IMPERIUM WON\n";
         else if (checkIfSquare(current)) {
-            for_each([&](auto &x) {
+			for_each([&](auto &x) {
                 for_each([&](auto &y) {
                     if (x.getShield() > 0 && y.getShield() > 0) {
                         attack(x, y);
@@ -102,9 +102,9 @@ public:
             }, ships);
         }
 
-        current += timeStep;
-        if (current >= end) {  // Handle overflow
-            current = end - current;
+       	current += timeStep;
+        while (current > end) {
+            current -= (end + 1);
         }
     }
 };
