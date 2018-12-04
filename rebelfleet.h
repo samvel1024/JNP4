@@ -6,6 +6,7 @@
 #include <stdexcept>
 #include <algorithm>
 #include <iostream>
+#include <typeinfo>
 
 template<bool B, class T = void>
 using enable_if_t = typename std::enable_if<B, T>::type;
@@ -58,6 +59,12 @@ public:
     enable_if_t<canAttack, T> getAttackPower() {
         return attackPower;
     }
+
+    template<typename T = U>
+    const std::type_info &valueType() {
+        return typeid(T);
+    }
+
 
 private:
     U shield;
