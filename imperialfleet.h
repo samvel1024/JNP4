@@ -3,8 +3,6 @@
 
 #include "rebelfleet.h"
 
-#define UNUSED(x) [&x]{}()
-
 template<typename U>
 using ImperialStarship = Starship<U, true>;
 
@@ -29,9 +27,6 @@ static void attack(ImperialStarship<I> &ship1, RebelStarship<R, false, min, max>
 }
 
 template<typename I, typename R>
-static void attack(I ship1, R ship2) {
-    UNUSED(ship1); // In order to silent clang warnings
-    UNUSED(ship2);
-}
+[[maybe_unused]] static void attack([[maybe_unused]]I& ship1, [[maybe_unused]]R& ship2) {}
 
-#endif
+#endif // __IMPERIALFLEET_H__
