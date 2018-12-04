@@ -5,19 +5,20 @@
 #include <cstdlib>
 #include <iostream>
 #include "rebelfleet.h"
-#include "math.h"
+
+using INT_64 = long long;
 
 template<int N>
 class Squares {
 private:
-    long long squares_table[N];
+    INT_64 squares_table[N];
 
 public:
     constexpr Squares() {
         for (int i = 0; i < N; i++) squares_table[i] = i * i;
     }
 
-    constexpr long long get(int i) const { return squares_table[i]; }
+    constexpr INT_64 get(int i) const { return squares_table[i]; }
 };
 
 template<typename T, T t0, T t1, typename... S>
@@ -27,9 +28,8 @@ private:
     const T start = t0;
     const T end = t1;
     T current = start;
-    using ll = long long;
-
-    constexpr static ll squareRoot(ll res, ll l, ll r) {
+   
+    constexpr static INT_64 squareRoot(INT_64 res, INT_64 l, INT_64 r) {
         if (l == r) {
             return r;
         } else {
@@ -42,9 +42,9 @@ private:
         }
     }
 
-    constexpr static ll squareRoot(ll res) { return squareRoot(res, 1, res); }
+    constexpr static INT_64 squareRoot(INT_64 res) { return squareRoot(res, 1, res); }
 
-    constexpr static ll squareNumber = squareRoot(t1);
+    constexpr static INT_64 squareNumber = squareRoot(t1);
     constexpr static auto squares = Squares<squareNumber>();
 
     std::tuple<S...> ships;
@@ -64,18 +64,18 @@ private:
         return ans;
     }
 
-    bool checkIfSquare(int n) {
-        int begin = 0, end = squareNumber, middle;
+    bool checkIfSquare(INT_64 n) {
+        INT_64 first = 0, last = squareNumber, middle;
 
-        while (begin < end) {
-            middle = (begin + end) / 2;
+        while (first < last) {
+            middle = (first + last) / 2;
             if (squares.get(middle) < n)
-                begin = middle + 1;
+                first = middle + 1;
             else
-                end = middle;
+                last = middle;
         }
 
-        return squares.get(begin) == n;
+        return squares.get(first) == n;
     }
 
 public:
@@ -89,7 +89,7 @@ public:
         if (countImperialFleet() == 0 && countRebelFleet() == 0)
             std::cout << "DRAW\n";
         else if (countImperialFleet() == 0)
-            std::cout << "REBELLION WON\n";
+            std::cout << "REBEILLION WON\n";
         else if (countRebelFleet() == 0)
             std::cout << "IMPERIUM WON\n";
         else if (checkIfSquare(current)) {
