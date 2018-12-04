@@ -1,5 +1,6 @@
 #include "rebelfleet.h"
 #include "battle.h"
+#include "imperialfleet.h"
 #include <cassert>
 
 int main() {
