@@ -89,7 +89,7 @@ public:
         if (countImperialFleet() == 0 && countRebelFleet() == 0)
             std::cout << "DRAW\n";
         else if (countImperialFleet() == 0)
-            std::cout << "REBEILLION WON\n";
+            std::cout << "REBELLION WON\n";
         else if (countRebelFleet() == 0)
             std::cout << "IMPERIUM WON\n";
         else if (checkIfSquare(current)) {
